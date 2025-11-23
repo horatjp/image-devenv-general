@@ -1,0 +1,10 @@
+alias ls='eza --icons'
+alias ll='eza --icons -l'
+alias la='eza --icons -la'
+alias lt='eza --icons -l --sort=modified'
+alias tree='eza --tree --icons'
+alias cat='batcat'
+alias fd='fdfind'
+
+alias myip='curl https://ipinfo.io/json'
+alias ports='lsof -i -P -n | grep LISTEN'

@@ -1,0 +1,52 @@
+scan_timeout = 30
+
+[character]
+disabled = false
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+
+[cmd_duration]
+min_time = 1000
+format = "[⌛$duration](bold white dimmed)"
+
+[directory]
+style = "bold cyan"
+
+[git_branch]
+symbol = " "
+style = "bold white"
+
+[git_status]
+format     = '[$all_status$ahead_behind](white) '
+ahead      = '[\(${count}⇡\)](green)'
+behind     = '[\(${count}⇣\)](red)'
+diverged   = '[\(${ahead_count}⇡${behind_count}⇣\)](purple)'
+conflicted = '[  ](bold orange)'
+stashed    = '[${count}  ](white)'
+staged     = '[${count}  ](cyan)'
+untracked  = '[${count}  ](green)'
+modified   = '[${count}  ](yellow)'
+deleted    = '[${count}  ](red)'
+
+[hostname]
+disabled = true
+
+[memory_usage]
+threshold = 70
+format = "[ Mem(${ram_pct})](bold red) "
+disabled = false
+
+[nodejs]
+symbol = "🍀 "
+
+[package]
+disabled = true
+
+[time]
+time_format = "%R"
+format = "[$time](white) "
+disabled = false
+
+[username]
+style_user = "bold blue dimmed"
+show_always = true
