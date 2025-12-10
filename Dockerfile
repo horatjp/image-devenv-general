@@ -73,8 +73,8 @@ RUN rm -f /usr/share/applications/chromium.desktop
 RUN su ${USERNAME} -c 'curl -sS https://starship.rs/install.sh | sh -s -- --yes'
 
 # Install Znap (Zsh plugin manager) and pre-install plugins
-RUN su ${USERNAME} -c 'git clone --depth=1 https://github.com/marlonrichert/zsh-snap.git $HOME/.zsh-snap \
-    && source $HOME/.zsh-snap/znap.zsh \
+RUN su ${USERNAME} -c 'git clone --depth=1 https://github.com/marlonrichert/zsh-snap.git /home/${USERNAME}/.zsh-snap \
+    && source /home/${USERNAME}/.zsh-snap/znap.zsh \
     && znap clone marlonrichert/zsh-autocomplete \
     && znap clone zsh-users/zsh-autosuggestions \
     && znap clone zsh-users/zsh-syntax-highlighting'
@@ -82,6 +82,10 @@ RUN su ${USERNAME} -c 'git clone --depth=1 https://github.com/marlonrichert/zsh-
 # Install mise
 RUN su ${USERNAME} -c 'curl https://mise.run | sh'
 ENV PATH="/home/${USERNAME}/.local/bin:${PATH}"
+ENV MISE_TRUSTED_CONFIG_PATHS="/workspace"
+
+# Install usage CLI for better mise completions
+RUN su ${USERNAME} -c 'mise use -g usage@latest'
 
 # Copy custom configuration files
 COPY --chown=${USERNAME}:${USERNAME} config/.zshrc /home/${USERNAME}/.zshrc

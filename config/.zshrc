@@ -20,3 +20,4 @@ eval "$(starship init zsh)"
 
 # mise
 eval "$(mise activate zsh)"
+eval "$(mise completion zsh)"
