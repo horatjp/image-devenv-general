@@ -3,34 +3,39 @@
 [![Docker Image](https://ghcr-badge.egpl.dev/horatjp/devenv-general/latest_tag?color=%2344cc11&ignore=latest&label=version&trim=)](https://github.com/horatjp/image-devenv-general/pkgs/container/devenv-general)
 [![Docker Image Size](https://ghcr-badge.egpl.dev/horatjp/devenv-general/size)](https://github.com/horatjp/image-devenv-general/pkgs/container/devenv-general)
 
-A versatile development container based on Debian Trixie.
-This container provides a comprehensive development environment with multiple programming language support and essential development tools.
+A versatile, lightweight development container based on Debian Trixie.
+This container provides a comprehensive development environment with flexible runtime management and modern development tools.
 
 ## Features
 
-- Multi-language version management (mise)
-- Python package manager (uv)
-- Enhanced shell environment (Oh My Zsh + Starship prompt)
-- Essential development tools
-- Database clients
+- 🚀 Multi-language version management (mise)
+- 🎨 Enhanced shell environment (Znap + Starship prompt)
+- 🛠️ Modern development tools (lazygit, git-delta, btop, and more)
+- 💾 Database clients
+- 🎯 Zero pre-installed runtimes - install what you need via mise
 
 ### Runtime Version Management
 
-- **mise**: Universal tool version manager for Node.js, Python, Ruby, Go, and more
-- **Default Node.js version**: 24.11.1 (customizable at build time)
-- Supports multiple language runtimes through a single tool
-
-### Python Environment
-
-- **uv**: Fast Python package manager and installer
+- **mise**: Universal tool version manager for Node.js, Bun, Deno, Python, Ruby, Go, and more
+- No pre-installed runtimes - keeps the image lightweight and flexible
+- Install only what you need for your project
+- Supports multiple language runtimes through a single unified tool
 
 ### Development Tools
 
-- **Version Control**: git, gh (GitHub CLI)
-- **Editors**: vim
+- **Version Control**: git, gh (GitHub CLI), lazygit (Git TUI)
+- **Git Enhancement**: git-delta (beautiful diff output)
+- **Editors**: vim (with pre-configured .vimrc)
+  - Line numbers, syntax highlighting
+  - Dark color scheme with transparent background
+  - Smart indent and search
+  - Modern key mappings (Space as leader key)
+  - Auto backup, undo, and swap files
 - **Terminal Multiplexer**: tmux
+- **System Monitor**: btop (modern resource monitor)
 - **Modern CLI Tools**: ripgrep, fd-find, bat, eza, fzf
-- **Shell**: zsh with Oh My Zsh and Starship prompt
+- **Shell**: zsh with Znap plugin manager and Starship prompt
+  - Pre-installed plugins: zsh-autocomplete, zsh-autosuggestions, zsh-syntax-highlighting
 - **Other Tools**: shellcheck, jq, yq, tree, ncdu, rsync
 
 ### Database Clients
@@ -52,16 +57,10 @@ This container provides a comprehensive development environment with multiple pr
 
 ## Building the Image
 
-### Default Build (Node.js 24.11.1)
+### Default Build
 
 ```bash
 docker build -t devenv-general .
-```
-
-### Custom Node.js Version
-
-```bash
-docker build --build-arg NODE_VERSION=20.11.0 -t devenv-general .
 ```
 
 ### Custom User Configuration
@@ -70,7 +69,6 @@ docker build --build-arg NODE_VERSION=20.11.0 -t devenv-general .
 docker build \
   --build-arg USERNAME=myuser \
   --build-arg USER_UID=1001 \
-  --build-arg NODE_VERSION=18.19.0 \
   -t devenv-general .
 ```
 
@@ -78,40 +76,22 @@ docker build \
 
 This image uses [mise](https://mise.jdx.dev/) for managing multiple language runtimes. mise is a modern, fast alternative to tools like nvm, rbenv, pyenv, etc., supporting many languages through a single unified interface.
 
-### List Installed Tools
+**Note**: No runtimes are pre-installed. You install only what you need for your project, keeping the container lightweight and flexible.
+
+### Quick Start Examples
 
 ```bash
-mise list
-```
+# Install Node.js
+mise use node@22
 
-### Install Additional Node.js Versions
+# Install Bun (fast JavaScript runtime)
+mise use bun@latest
 
-```bash
-mise use node@20.11.0
-mise use node@18.19.0
-```
-
-### Switch Between Versions
-
-```bash
-# Set globally
-mise use --global node@20
-
-# Set for current project
-mise use node@18
-```
-
-### List Available Versions
-
-```bash
-mise ls-remote node
-```
-
-### Install Other Languages
-
-```bash
 # Install Python
 mise use python@3.12
+
+# Install Deno
+mise use deno@latest
 
 # Install Go
 mise use go@1.21
@@ -120,10 +100,26 @@ mise use go@1.21
 mise use ruby@3.2
 ```
 
-### Check Current Versions
+### Common Commands
 
 ```bash
+# List installed tools
+mise list
+
+# List available versions of a tool
+mise ls-remote node
+
+# Set globally (for all projects)
+mise use --global node@20
+
+# Set for current project only
+mise use node@18
+
+# Check current versions
 mise current
+
+# Install all tools defined in .mise.toml or .tool-versions
+mise install
 ```
 
 ## Build Arguments
@@ -133,7 +129,6 @@ mise current
 | `USERNAME` | Development user name | `devuser` |
 | `USER_UID` | User ID | `1000` |
 | `USER_GID` | Group ID | `USER_UID` |
-| `NODE_VERSION` | Node.js version to install | `24.11.1` |
 
 ## Usage Examples
 
@@ -174,54 +169,42 @@ Create `.devcontainer/devcontainer.json` in your project:
 }
 ```
 
-### Custom Node.js Version with Dev Container
+### Installing Runtime at Container Creation
 
-```json
-{
-  "name": "General Development Environment",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "args": {
-      "NODE_VERSION": "20.11.0"
-    }
-  },
-  "remoteUser": "devuser",
-  "workspaceFolder": "/workspace",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
-}
-```
-
-Create `.devcontainer/Dockerfile`:
-
-```dockerfile
-FROM ghcr.io/horatjp/devenv-general:latest
-
-# Additional customizations if needed
-```
-
-### Installing Different Node.js Version at Runtime
+Use `postCreateCommand` to automatically install the runtime when the container is created:
 
 ```json
 {
   "name": "General Development Environment",
   "image": "ghcr.io/horatjp/devenv-general:latest",
   "remoteUser": "devuser",
-  "postCreateCommand": "mise use node@18",
+  "postCreateCommand": "mise use node@22 && mise use bun@latest",
   "workspaceFolder": "/workspace"
 }
 ```
 
 ### Using mise with .mise.toml
 
-You can also define tool versions in a `.mise.toml` file in your project:
+You can define tool versions in a `.mise.toml` file in your project root:
 
 ```toml
 [tools]
-node = "20.11.0"
+node = "22.11.0"
+bun = "latest"
 python = "3.12"
+go = "1.21"
 ```
 
-The versions will be automatically activated when you enter the project directory.
+Or use `.tool-versions` (asdf-compatible format):
+
+```
+node 22.11.0
+bun latest
+python 3.12
+go 1.21
+```
+
+The versions will be automatically activated when you enter the project directory. Simply run `mise install` to install all defined tools.
 
 ## License
 
