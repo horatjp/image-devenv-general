@@ -1,3 +1,8 @@
+format = """
+$container\
+$all
+"""
+
 right_format = "$time"
 
 [character]
@@ -10,9 +15,13 @@ min_time = 1000
 format = '[ 󱎫 $duration ](white dimmed)'
 
 [container]
-disabled = true
+disabled = false
+symbol = "󰡨 "
+style = "bold green dimmed"
+format = "[$symbol$name ]($style)"
 
 [directory]
+disabled = false
 truncation_length = 3
 truncate_to_repo = true
 style = "bold cyan"
@@ -47,5 +56,6 @@ format = '[ $time ](white dimmed)'
 time_format = '%Y-%m-%d %R'
 
 [username]
+disabled = true
 style_user = "bold blue dimmed"
 show_always = true
