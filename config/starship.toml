@@ -1,4 +1,4 @@
-scan_timeout = 30
+right_format = "$time"
 
 [character]
 disabled = false
@@ -7,45 +7,44 @@ error_symbol = "[➜](bold red)"
 
 [cmd_duration]
 min_time = 1000
-format = "[⌛$duration](bold white dimmed)"
+format = '[ 󱎫 $duration ](white dimmed)'
+
+[container]
+disabled = true
 
 [directory]
+truncation_length = 3
+truncate_to_repo = true
 style = "bold cyan"
 
 [git_branch]
-symbol = " "
-style = "bold white"
+symbol = " "
+style = "bold black"
 
 [git_status]
-format     = '[$all_status$ahead_behind](white) '
-ahead      = '[\(${count}⇡\)](green)'
-behind     = '[\(${count}⇣\)](red)'
-diverged   = '[\(${ahead_count}⇡${behind_count}⇣\)](purple)'
-conflicted = '[  ](bold orange)'
-stashed    = '[${count}  ](white)'
-staged     = '[${count}  ](cyan)'
-untracked  = '[${count}  ](green)'
-modified   = '[${count}  ](yellow)'
-deleted    = '[${count}  ](red)'
-
-[hostname]
-disabled = true
+format     = '[$all_status$ahead_behind](white dimmed) '
+ahead      = '[\(${count}⇡\)](green dimmed)'
+behind     = '[\(${count}⇣\)](red dimmed)'
+diverged   = '[\(${ahead_count}⇡${behind_count}⇣\)](purple dimmed)'
+conflicted = '[  ](bold orange dimmed)'
+stashed    = '[  ${count} ](white dimmed)'
+staged     = '[ ${count} ](cyan dimmed)'
+untracked  = '[󰻭 ${count} ](green dimmed)'
+modified   = '[ ${count} ](yellow dimmed)'
+deleted    = '[󱀷 ${count} ](red dimmed)'
 
 [memory_usage]
 threshold = 70
 format = "[ Mem(${ram_pct})](bold red) "
 disabled = false
 
-[nodejs]
-symbol = "🍀 "
-
 [package]
 disabled = true
 
 [time]
-time_format = "%R"
-format = "[$time](white) "
 disabled = false
+format = '[ $time ](white dimmed)'
+time_format = '%Y-%m-%d %R'
 
 [username]
 style_user = "bold blue dimmed"
