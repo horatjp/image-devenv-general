@@ -3,7 +3,6 @@ FROM debian:trixie
 ARG USERNAME=devuser
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-ARG NODE_VERSION=24.11.1
 
 ENV DEVCONTAINER=true
 
@@ -50,6 +49,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     eza \
     fzf \
     gh \
+    lazygit \
+    git-delta \
+    btop \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -64,33 +66,30 @@ RUN : \
     && mkdir -p /workspace \
     && chown ${USERNAME}:${USERNAME} /workspace
 
-# Install uv (Python package manager)
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-
 # Remove Chromium desktop entry
 RUN rm -f /usr/share/applications/chromium.desktop
 
 # Install Starship prompt (as non-root user)
 RUN su ${USERNAME} -c 'curl -sS https://starship.rs/install.sh | sh -s -- --yes'
 
-# Install Oh My Zsh and plugins in a single layer
-RUN su ${USERNAME} -c 'git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git $HOME/.oh-my-zsh \
-    # Plugins
-    && git clone --depth=1 https://github.com/marlonrichert/zsh-autocomplete ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autocomplete \
-    && git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions \
-    && git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting'
+# Install Znap (Zsh plugin manager) and pre-install plugins
+RUN su ${USERNAME} -c 'git clone --depth=1 https://github.com/marlonrichert/zsh-snap.git $HOME/.zsh-snap \
+    && source $HOME/.zsh-snap/znap.zsh \
+    && znap clone marlonrichert/zsh-autocomplete \
+    && znap clone zsh-users/zsh-autosuggestions \
+    && znap clone zsh-users/zsh-syntax-highlighting'
 
-# Install mise and Node.js
+# Install mise
 RUN su ${USERNAME} -c 'curl https://mise.run | sh'
 ENV PATH="/home/${USERNAME}/.local/bin:${PATH}"
-RUN su ${USERNAME} -c 'mise use --global node@${NODE_VERSION}'
 
-# Copy custom zsh configuration files
+# Copy custom configuration files
 COPY --chown=${USERNAME}:${USERNAME} config/.zshrc /home/${USERNAME}/.zshrc
 COPY --chown=${USERNAME}:${USERNAME} config/.zshrc.alias /home/${USERNAME}/.zshrc.alias
 COPY --chown=${USERNAME}:${USERNAME} config/.zshrc.history /home/${USERNAME}/.zshrc.history
-COPY --chown=${USERNAME}:${USERNAME} config/.zshrc.oh-my-zsh /home/${USERNAME}/.zshrc.oh-my-zsh
+COPY --chown=${USERNAME}:${USERNAME} config/.zshrc.znap /home/${USERNAME}/.zshrc.znap
 COPY --chown=${USERNAME}:${USERNAME} config/starship.toml /home/${USERNAME}/.config/starship.toml
+COPY --chown=${USERNAME}:${USERNAME} config/.vimrc /home/${USERNAME}/.vimrc
 
 # Set environment variables
 ENV SHELL=/bin/zsh

@@ -9,8 +9,8 @@ setopt interactive_comments
 # history
 [ -f ~/.zshrc.history ] && source ~/.zshrc.history
 
-# Oh My Zsh
-[ -f ~/.zshrc.oh-my-zsh ] && source ~/.zshrc.oh-my-zsh
+# Znap
+[ -f ~/.zshrc.znap ] && source ~/.zshrc.znap
 
 # starship
 eval "$(starship init zsh)"
