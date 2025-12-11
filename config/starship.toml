@@ -16,15 +16,15 @@ format = '[ 󱎫 $duration ](white dimmed)'
 
 [container]
 disabled = false
-symbol = "󰡨 "
-style = "bold green dimmed"
-format = "[$symbol$name ]($style)"
+format = "[󰡨 ](white dimmed)"
 
 [directory]
-disabled = false
 truncation_length = 3
 truncate_to_repo = true
 style = "bold cyan"
+
+[fill]
+symbol = " "
 
 [git_branch]
 symbol = " "
@@ -41,6 +41,11 @@ staged     = '[ ${count} ](cyan dimmed)'
 untracked  = '[󰻭 ${count} ](green dimmed)'
 modified   = '[ ${count} ](yellow dimmed)'
 deleted    = '[󱀷 ${count} ](red dimmed)'
+
+[hostname]
+disabled = false
+ssh_only = false
+format = "[$hostname](white dimmed) "
 
 [memory_usage]
 threshold = 70
